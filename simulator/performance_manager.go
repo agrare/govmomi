@@ -204,7 +204,8 @@ func (p *PerformanceManager) QueryPerf(ctx *Context, req *types.QueryPerf) soap.
 			interval = 20 // TODO: Determine from entity type
 		}
 		n := 1 + int32(end.Sub(start).Seconds())/interval
-		if n > qs.MaxSample {
+		if qs.MaxSample > 0 && n > qs.MaxSample {
+			fmt.Println("limit samples. was:",n, " now:",qs.MaxSample)
 			n = qs.MaxSample
 		}
 
