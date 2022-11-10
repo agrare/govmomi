@@ -18,7 +18,9 @@ package simulator
 
 import (
 	"math/rand"
+	"fmt"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/vmware/govmomi/simulator/esx"
@@ -241,7 +243,33 @@ func (p *PerformanceManager) QueryPerf(ctx *Context, req *types.QueryPerf) soap.
 			}
 			metrics.Value[j] = series
 		}
-		body.Res.Returnval[i] = metrics
+		if qs.Format == "csv" {
+			body.Res.Returnval[i] = p.FormatCsvQueryResults(qs, metrics)
+		} else {
+			body.Res.Returnval[i] = metrics
+		}
 	}
 	return body
+}
+
+func (p *PerformanceManager) FormatCsvQueryResults(qs types.PerfQuerySpec, metrics *types.PerfEntityMetric) *types.PerfEntityMetricCSV {
+	metrics_csv := new(types.PerfEntityMetricCSV)
+
+	sample_info_csv := make([]string, len(metrics.SampleInfo))
+	for i, sample := range metrics.SampleInfo {
+		sample_info_csv[i] = fmt.Sprintf("%d,%s", sample.Interval, sample.Timestamp.Format(time.RFC3339))
+	}
+
+	values_csv := make([]types.PerfMetricSeriesCSV, len(metrics.Value))
+	for i, value := range metrics.Value {
+		values_csv[i].Id = value.(*types.PerfMetricIntSeries).Id
+		values_csv[i].Value = strings.Trim(strings.Join(strings.Fields(fmt.Sprint(value.(*types.PerfMetricIntSeries).Value[:])), ","), "[]")
+	}
+
+	metrics_csv.Entity = qs.Entity
+	// TODO: use actual csv here
+	metrics_csv.SampleInfoCSV = strings.Join(sample_info_csv[:], ",")
+	metrics_csv.Value = values_csv
+
+	return metrics_csv
 }
