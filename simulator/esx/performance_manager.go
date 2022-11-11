@@ -18,6 +18,16 @@ package esx
 
 import "github.com/vmware/govmomi/vim25/types"
 
+var HistoricalInterval = []types.PerfInterval{
+	{
+		Enabled: true,
+		Key: 1,
+		Length: 129600,
+		Name: "PastDay",
+		SamplingPeriod: 300,
+	},
+}
+
 // PerfCounter is the default template for the PerformanceManager perfCounter property.
 // Capture method:
 //   govc object.collect -s -dump PerformanceManager:ha-perfmgr perfCounter

@@ -22,6 +22,41 @@ import "github.com/vmware/govmomi/vim25/types"
 // Capture method:
 //   govc object.collect -s -dump PerformanceManager:PerfMgr perfCounter
 
+var HistoricalInterval = []types.PerfInterval{
+	{
+		Enabled: true,
+		Key: 1,
+		Length: 86400,
+		Level: 1,
+		Name: "Past Day",
+		SamplingPeriod: 300,
+	},
+	{
+		Enabled: true,
+		Key: 2,
+		Length: 604800,
+		Level: 1,
+		Name: "Past week",
+		SamplingPeriod: 1800,
+	},
+	{
+		Enabled: true,
+		Key: 1,
+		Length: 2592000,
+		Level: 1,
+		Name: "Past month",
+		SamplingPeriod: 7200,
+	},
+	{
+		Enabled: true,
+		Key: 1,
+		Length: 31536000,
+		Level: 1,
+		Name: "Past year",
+		SamplingPeriod: 86400,
+	},
+}
+
 var PerfCounter = []types.PerfCounterInfo{
 	{
 		Key: 1,

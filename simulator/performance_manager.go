@@ -45,6 +45,7 @@ var historicProviderSummary = types.PerfProviderSummary{
 
 type PerformanceManager struct {
 	mo.PerformanceManager
+	historicalInterval []types.PerfInterval
 	vmMetrics         []types.PerfMetricId
 	hostMetrics       []types.PerfMetricId
 	rpMetrics         []types.PerfMetricId
@@ -58,12 +59,14 @@ type PerformanceManager struct {
 func (m *PerformanceManager) init(r *Registry) {
 	if r.IsESX() {
 		m.PerfCounter = esx.PerfCounter
+		m.historicalInterval = esx.HistoricalInterval
 		m.hostMetrics = esx.HostMetrics
 		m.vmMetrics = esx.VmMetrics
 		m.rpMetrics = esx.ResourcePoolMetrics
 		m.metricData = esx.MetricData
 	} else {
 		m.PerfCounter = vpx.PerfCounter
+		m.historicalInterval = vpx.HistoricalInterval
 		m.hostMetrics = vpx.HostMetrics
 		m.vmMetrics = vpx.VmMetrics
 		m.rpMetrics = vpx.ResourcePoolMetrics
